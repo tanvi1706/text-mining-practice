@@ -1,0 +1,100 @@
+import nltk
+import pandas as pd
+import numpy as np
+with open('moby.txt','r') as f:
+	moby_raw = f.read()
+
+moby_tokens = nltk.word_tokenizer(moby_raw)
+text1 = nltk.Text(moby_tokens)
+output: <Text: Moby Dick by Herman Melville 1851>
+#no of tokens:
+len(nltk.word_tokenize(moby_raw)) or len(text1)
+#no of unique words
+len(set(nltk.word_tokenize(moby_raw))) or len(set(text1))
+#after lemmatizer how many unique words?
+from nltk.stem import WordNetLemmatizer
+nltk.download('wordnet')
+import re
+def func():
+	lemmatizer = WordNetLemmatizer()
+	lemmatized = [lemmatizer.lemmatize(e,'v') for e in text1]
+	return len(set(lemmatized))
+diversity = (no of unique tokens)/(total no of tokens) = len(set(text1))/len(text1)
+# %of tokens is 'Whale' or 'whale'
+(text1.vocab()['Whale'] + text1.vocab['whale'])/len(text1)*100
+# 20 most frequently occurring (token,freq)
+import operator
+return sorted(text1.vocab().items(), key=operator.itemgetter(1), reverse=True)[:20]
+# alphabetically sorted tokens with length > 5 and frequency > 150
+sorted([tok for tok,freq in text1.vocab().items() if len(tok) > 5 and freq>150])
+# longest word in text1 return (longest_word, length)
+longest = 0
+word1 = ''
+for x,f in text1.vocab().items():
+	if len(x) > longest:
+		longest = len(x)
+		word1 = x
+return (word1, longest)
+
+# no of unique words having freq > 2000 return (frequency, word)
+sorted([(f,w) for f,w in text1.vocab().items() if f > 2000 and w.isalpha()], reverse =True)
+
+# no of tokens per sentence
+sen_list = nltk.sent_tokenize(moby_raw)
+total = len(sen_list)
+sump = 0
+for s in sen_list:
+	x = len(nltk.word_tokenize(s))
+	sump += x
+return sump/total
+
+# 5 most common parts-of-speach
+# option1:
+nltk.download('averaged_perceptron_tagger')
+pos1 = nltk.pos_tag(text1)
+from collections import Counter
+x = Counter([t for token,t in pos1])
+return x.most_common()[:5]
+#option 2:
+import operators
+from collections import Counter
+return sorted(Counter([tag for token,tag in nltk.pos_tag(text1)]).items(), key=operator.itemgetter(1), reverse=true)[:5]
+
+#Spelling recommender
+
+nltk.download('words')
+from nltk.corpus import words
+correct_spellings = words.words()
+ #jaccard distance (intersection)/(union). n=3
+ entries = ['cormulent', 'incendence', 'validrate']
+ tup = []
+ import operator
+ for entry in entries:
+ 	spell_list = [spell for spell in correct_spellings if len(spell)>2 and spell.startswith(entry[0])]
+ 	distance_list = [(spell, nltk.jaccard_distance(set(nltk.ngrams(entry,n=3)), set(nltk.ngrams(spell,n=3)))) for spell in spell_list]
+ 	tup.append(sorted(distance_list, key=operator.itemgetter(1))[0][0])
+return tup
+ #Jaccard distance on the 4-grams of the two words. n=4
+ tup = []
+ 	import operator
+   	for entry in entries:
+   		spell_list = [spell for spell in correct_spellings if spell.startswith(entry[0]) and len(spell) > 2]
+        distance_list = [(spell, nltk.jaccard_distance(set(nltk.ngrams(entry, n=4)), set(nltk.ngrams(spell, n=4)))) for spell in spell_list]
+
+    tup.append(sorted(distance_list, key=operator.itemgetter(1))[0][0])
+return tup
+
+Edit distance on the two words with transpositions.
+result = []
+    import operator
+    for entry in entries:
+        spell_list = [spell for spell in correct_spellings if spell.startswith(entry[0]) and len(spell) > 2]
+        distance_list = [(spell, nltk.edit_distance(entry, spell, transpositions=True)) for spell in spell_list]
+
+        result.append(sorted(distance_list, key=operator.itemgetter(1))[0][0])
+    
+    return result
+
+
+
+
